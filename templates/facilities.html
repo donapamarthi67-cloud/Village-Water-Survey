@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section"><div class="container">
+<h1 class="section-title" data-en="Village Water Facilities" data-te="గ్రామంలోని నీటి సౌకర్యాలు">Village Water Facilities</h1>
+<p class="small-muted" data-en="Current water facilities and their present condition." data-te="గ్రామంలోని నీటి సౌకర్యాలు మరియు వాటి ప్రస్తుత స్థితి.">Current water facilities and their present condition.</p>
+<div class="row g-3 mt-2">
+{% for f in facilities %}
+<div class="col-md-6 col-lg-4"><div class="facility-card">
+<div class="d-flex justify-content-between align-items-start">
+<div class="icon-circle"><i class="bi bi-droplet-fill"></i></div>
+<span class="badge {% if f.status=='Working' %}badge-working{% elif f.status=='Needs Maintenance' %}badge-maint{% else %}badge-off{% endif %}"
+ data-en="{{ f.status }}"
+ data-te="{% if f.status=='Working' %}పనిచేస్తోంది{% elif f.status=='Needs Maintenance' %}మరమ్మత్తు అవసరం{% else %}పనిచేయడం లేదు{% endif %}">{{ f.status }}</span>
+</div>
+<h4 class="mt-3"
+ data-en="{{ f.name }}"
+ data-te="{% if f.name=='Main Overhead Tank' %}ప్రధాన నీటి ట్యాంక్{% elif f.name=='East Borewell' %}తూర్పు బోర్‌వెల్{% elif f.name=='Community Hand Pump' %}సామూహిక చేతి పంపు{% elif f.name=='Public Tap Point' %}ప్రజా కుళాయి{% else %}{{ f.name }}{% endif %}">{{ f.name }}</h4>
+<p class="mb-1"><b data-en="Type:" data-te="రకం:">Type:</b> <span data-en="{{ f.type }}" data-te="{% if f.type=='Water Tank' %}నీటి ట్యాంక్{% elif f.type=='Borewell' %}బోర్‌వెల్{% elif f.type=='Hand Pump' %}చేతి పంపు{% elif f.type=='Public Tap' %}ప్రజా కుళాయి{% else %}{{ f.type }}{% endif %}">{{ f.type }}</span></p>
+<p class="mb-1"><b data-en="Location:" data-te="ప్రదేశం:">Location:</b> <span data-en="{{ f.location }}" data-te="{% if f.location=='Village Main Road' %}గ్రామ ప్రధాన రహదారి{% elif f.location=='East Street' %}తూర్పు వీధి{% elif f.location=='School Road' %}పాఠశాల రహదారి{% elif f.location=='Market Area' %}మార్కెట్ ప్రాంతం{% else %}{{ f.location }}{% endif %}">{{ f.location }}</span></p>
+<p class="mb-1"><b data-en="Ward:" data-te="వార్డు:">Ward:</b> <span data-en="Ward {{ f.ward }}" data-te="{{ f.ward }}వ వార్డు">Ward {{ f.ward }}</span></p>
+<p class="mb-1"><b data-en="Households served:" data-te="నీరు పొందుతున్న కుటుంబాలు:">Households served:</b> {{ f.households_served }}</p>
+<p class="small-muted mb-0"><b data-en="Last maintenance:" data-te="చివరిసారి మరమ్మత్తు చేసిన తేదీ:">Last maintenance:</b> <span data-en="{{ f.maintenance_date or 'Not recorded' }}" data-te="{{ f.maintenance_date or 'నమోదు కాలేదు' }}">{{ f.maintenance_date or "Not recorded" }}</span></p>
+</div></div>
+{% endfor %}
+</div></div></div>
+{% endblock %}

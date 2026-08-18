@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="section"><div class="container" style="max-width:900px">
+<div class="mb-4"><h1 class="section-title" data-en="Household Water & Socio-Economic Survey" data-te="కుటుంబ నీటి మరియు సామాజిక-ఆర్థిక సర్వే">Household Water & Socio-Economic Survey</h1>
+<p class="small-muted" data-en="Please provide accurate information. Required fields are marked *." data-te="దయచేసి సరైన వివరాలను ఇవ్వండి. * గుర్తు ఉన్నవి తప్పనిసరి.">Please provide accurate information. Required fields are marked *.</p>
+<div class="progress"><div id="surveyProgress" class="progress-bar" style="width:20%"></div></div></div>
+<form method="post" class="form-card">
+<div id="step1" class="step active"><h4>1. Household Information</h4><div class="row g-3 mt-1">
+{% for name,en,te,type in [("household_head","Name of household head","కుటుంబ పెద్ద పేరు","text"),("mobile","Mobile number","మొబైల్ నంబర్","tel"),("village","Village name","గ్రామం పేరు","text"),("ward","Ward number","వార్డు నంబర్","text"),("house_number","House number","ఇంటి నంబర్","text"),("family_members","Number of family members","కుటుంబ సభ్యుల సంఖ్య","number"),("male_members","Male members","పురుషులు","number"),("female_members","Female members","మహిళలు","number"),("children","Children","పిల్లలు","number"),("senior_citizens","Senior citizens","వృద్ధులు","number")] %}
+<div class="col-md-6"><label class="form-label" data-en="{{en}}" data-te="{{te}}">{{en}}{% if name in ['household_head','mobile','village','ward','family_members'] %} *{% endif %}</label><input class="form-control" name="{{name}}" type="{{type}}" {% if name in ['household_head','mobile','village','ward','family_members'] %}required{% endif %}></div>
+{% endfor %}</div><button type="button" class="btn btn-green mt-4" onclick="nextStep(2)">Next</button></div>
+
+<div id="step2" class="step"><h4>2. Socio-Economic Information</h4><div class="row g-3 mt-1">
+{% for name,en,te,opts in [
+("occupation","Occupation","వృత్తి","Agriculture|Daily wage|Business|Employee|Student|Other"),
+("education","Education level","విద్యా స్థాయి","No formal education|Primary|Secondary|Intermediate|Graduate|Postgraduate"),
+("income_range","Monthly household income range","నెలవారీ కుటుంబ ఆదాయ పరిధి","Below ₹10,000|₹10,000–₹20,000|₹20,000–₹30,000|Above ₹30,000"),
+("house_type","Type of house","ఇంటి రకం","Pucca|Semi-pucca|Kutcha"),
+("electricity","Electricity available?","విద్యుత్ సౌకర్యం ఉందా?","Yes|No"),
+("toilet","Toilet available?","మరుగుదొడ్డి ఉందా?","Yes|No"),
+("livelihood","Main source of livelihood","ప్రధాన జీవనోపాధి","Agriculture|Labour|Business|Service|Other")] %}
+<div class="col-md-6"><label class="form-label">{{en}} / {{te}}</label><select class="form-select" name="{{name}}">{% for o in opts.split('|') %}<option>{{o}}</option>{% endfor %}</select></div>
+{% endfor %}</div><button type="button" class="btn btn-outline-secondary mt-4 me-2" onclick="prevStep(1)">Back</button><button type="button" class="btn btn-green mt-4" onclick="nextStep(3)">Next</button></div>
+
+<div id="step3" class="step"><h4>3. Drinking Water Availability</h4><div class="row g-3 mt-1">
+<div class="col-md-6"><label class="form-label">Main source / ప్రధాన తాగునీటి వనరు</label><select class="form-select" name="water_source">{% for x in ["Tap water / కుళాయి నీరు","Borewell / బోర్‌వెల్","Hand pump / చేతి పంపు","Public water tank / ప్రజా నీటి ట్యాంక్","Open well / బావి","River/canal / నది/కాలువ","Water tanker / వాటర్ ట్యాంకర్","Other / ఇతర"] %}<option>{{x}}</option>{% endfor %}</select></div>
+<div class="col-md-6"><label class="form-label">Regular availability? / క్రమం తప్పకుండా అందుతుందా?</label><select class="form-select" name="water_availability"><option>Regular / క్రమం తప్పకుండా</option><option>Irregular / క్రమం తప్పకుండా కాదు</option><option>Not available / అందుబాటులో లేదు</option></select></div>
+{% for name,label in [("hours_per_day","Hours per day / రోజుకు గంటలు"),("days_per_week","Days per week / వారానికి రోజులు")] %}<div class="col-md-6"><label class="form-label">{{label}}</label><input class="form-control" type="number" min="0" name="{{name}}"></div>{% endfor %}
+{% for name,label in [("distance","Distance to source / నీటి వనరుకు దూరం"),("queue","Queue required? / క్యూలో వేచి ఉండాలా?"),("purchases_water","Purchase drinking water? / తాగునీరు కొనుగోలు చేస్తున్నారా?")] %}<div class="col-md-6"><label class="form-label">{{label}}</label><input class="form-control" name="{{name}}"></div>{% endfor %}
+</div><button type="button" class="btn btn-outline-secondary mt-4 me-2" onclick="prevStep(2)">Back</button><button type="button" class="btn btn-green mt-4" onclick="nextStep(4)">Next</button></div>
+
+<div id="step4" class="step"><h4>4. Water Quality</h4><p class="small-muted">Please answer based on your household's experience.</p><div class="row g-3">
+{% for name,label in [("water_clear","Is the water clear? / నీరు శుభ్రంగా ఉందా?"),("bad_smell","Bad smell? / దుర్వాసన ఉందా?"),("unusual_taste","Unusual taste? / వింత రుచి ఉందా?"),("contamination","Sometimes contaminated? / కొన్నిసార్లు కలుషితమవుతుందా?"),("water_illness","Water-related illness experienced? / నీటి వల్ల అనారోగ్యం ఎదురైందా?"),("filtration","Water filtration available? / నీటి శుద్ధి సౌకర్యం ఉందా?"),("purifier","Do you use a purifier? / వాటర్ ప్యూరిఫైయర్ వాడుతున్నారా?")] %}
+<div class="col-md-6"><label class="form-label">{{label}}</label><select class="form-select" name="{{name}}"><option>Yes / అవును</option><option>No / కాదు</option><option>Not sure / తెలియదు</option></select></div>
+{% endfor %}</div><button type="button" class="btn btn-outline-secondary mt-4 me-2" onclick="prevStep(3)">Back</button><button type="button" class="btn btn-green mt-4" onclick="nextStep(5)">Next</button></div>
+
+<div id="step5" class="step"><h4>5. Problems Faced by Your Household</h4><p class="small-muted">Select all that apply / వర్తించే అన్ని సమస్యలను ఎంచుకోండి</p><div class="row g-2">
+{% for value in ["No drinking water / తాగునీరు అందుబాటులో లేదు","Irregular water supply / క్రమం తప్పిన నీటి సరఫరా","Low water pressure / నీటి ఒత్తిడి తక్కువగా ఉంది","Poor water quality / నీటి నాణ్యత బాగోలేదు","Dirty water / మురికి నీరు","Water contamination / నీరు కలుషితమవుతోంది","Broken pipeline / పైప్‌లైన్ దెబ్బతింది","Broken tap / కుళాయి దెబ్బతింది","Borewell not working / బోర్‌వెల్ పనిచేయడం లేదు","Hand pump not working / చేతి పంపు పనిచేయడం లేదు","Water tank problem / నీటి ట్యాంక్ సమస్య","Long distance / నీటి వనరు చాలా దూరంగా ఉంది","Long waiting time / ఎక్కువ సమయం వేచి ఉండాలి","Water tanker not arriving / వాటర్ ట్యాంకర్ రావడం లేదు","Insufficient water / నీరు సరిపోవడం లేదు","Drainage/wastewater problem / డ్రైనేజీ సమస్య","Other / ఇతర"] %}
+<div class="col-md-6"><label class="form-check border rounded p-3"><input class="form-check-input me-2" type="checkbox" name="problems" value="{{value}}"> {{value}}</label></div>
+{% endfor %}</div><div class="form-check mt-3"><input class="form-check-input" type="checkbox" required id="consent"><label class="form-check-label" for="consent">I confirm the information is correct. / నేను ఇచ్చిన సమాచారం సరైనదని నిర్ధారిస్తున్నాను.</label></div>
+<button type="button" class="btn btn-outline-secondary mt-4 me-2" onclick="prevStep(4)">Back</button><button class="btn btn-green mt-4" type="submit">Submit Survey / సర్వే సమర్పించండి</button></div>
+</form></div></div>
+{% endblock %}
